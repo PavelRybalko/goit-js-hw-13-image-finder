@@ -44,8 +44,9 @@ body {
 }
 
 .control-form {
-  padding: 7.5px;
+  padding: 6px;
   margin-right: 10px;
+  border-radius: 3px;
 }
 
 .button {
@@ -91,6 +92,7 @@ body {
 }
 
 .stats {
+  // vertical-align: middle;
   // bottom: 0px;
   // position: absolute;
   // display: flex;

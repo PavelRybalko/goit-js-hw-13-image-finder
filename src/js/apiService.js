@@ -1,3 +1,4 @@
+import { alert, notice, info, success, error } from '@pnotify/core';
 const apiKey = '18705092-a3d0db19a14bd823df17dac7b';
 
 export default {
@@ -9,10 +10,18 @@ export default {
 		return fetch(url)
 		.then(res => res.json())
 		.then(({hits, total}) => {
-			// if(total === 0){
-			// 	console.log('error');
-			// 	return;
-			// }
+			const loadCount = Math.ceil(total/12);
+		
+			if(!hits){
+				error('Сделайте более специфичный запрос!');
+				return;
+			}
+
+			if(total>0 && loadCount < this.page){
+				error('Это все результаты по вашему запросу!');
+				return;
+			}
+
 			this.incrementPage();
 			return hits;
 		})

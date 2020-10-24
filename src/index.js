@@ -1,3 +1,4 @@
+import { alert, notice, info, success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
 import './sass/styles.scss';
@@ -6,25 +7,17 @@ import 'material-design-icons/iconfont/material-icons.css';
 import LoadMoreBtn from './js/LoadMoreButton';
 import refs from './js/refs';
 import updatePicsMarkup from './js/update-pics-markup';
-import searchFormTpl from './templates/search-form.hbs';
+import createSearchFormMarkup from './js/createSearchFormMarkup';
 import apiService from './js/apiService';
 
-
-function searchFormMarkup(){
-	const markup = searchFormTpl();
-	refs.containerRef.insertAdjacentHTML('afterbegin', markup);
-}
-searchFormMarkup();
-
+createSearchFormMarkup();
 const loadMoreBtn = new LoadMoreBtn({
-
 	selector: 'button[data-action="load-more"]',
 	hidden: true,
 }); 
 
-
-
-refs.searchFormRef.addEventListener('submit', searchFormSubmitHandler);
+const searchFormRef = document.querySelector('form#search-form');
+searchFormRef.addEventListener('submit', searchFormSubmitHandler);
 loadMoreBtn.refs.button.addEventListener('click', fetchPics);
 
 function searchFormSubmitHandler(event) {
@@ -42,9 +35,16 @@ function searchFormSubmitHandler(event) {
 
 function fetchPics(){
 	loadMoreBtn.disable();
-	apiService.fetchPics().then(pics => {
-		if (!pics) return error('Неверный запрос!');
-		updatePicsMarkup(pics);
+	apiService.fetchPics().then((hits) => {
+
+		if(!hits){
+			loadMoreBtn.show();
+			loadMoreBtn.noMore()
+			return;
+		}
+
+		success('Запрос успешно выполнен!');
+		updatePicsMarkup(hits);	
 		loadMoreBtn.show();
 		loadMoreBtn.enable();
 
@@ -52,9 +52,10 @@ function fetchPics(){
 			top: document.documentElement.offsetHeight,
 			behavior: 'smooth',
 		});
-		// console.log(document.documentElement.offsetHeight);
-		// console.log(document.documentElement.scrollHeight);
-	}).catch(e=>console.log(e));
+
+	}).catch(e=>{
+		console.log(e)
+	});
 };
 
 function clearPicsContainer(){
