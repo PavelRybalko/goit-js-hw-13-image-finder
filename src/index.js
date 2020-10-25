@@ -24,35 +24,38 @@ function searchFormSubmitHandler(event) {
 	event.preventDefault();
 
 	const form = event.currentTarget;
-	apiService.query = form.elements.query.value;
 
+	if (form.elements.query.value !== '') {
+	apiService.query = form.elements.query.value;
 
 	clearPicsContainer();
 	apiService.resetPage();
 	fetchPics();
 	form.reset();
+	};
 };
 
 function fetchPics(){
 	loadMoreBtn.disable();
-	apiService.fetchPics().then((hits) => {
+	apiService.fetchPics().then(pics => {
 
-		if(!hits){
-			loadMoreBtn.show();
-			loadMoreBtn.noMore()
-			return;
-		}
-
-		success('Запрос успешно выполнен!');
-		updatePicsMarkup(hits);	
-		loadMoreBtn.show();
-		loadMoreBtn.enable();
-
-		window.scrollTo({
-			top: document.documentElement.offsetHeight,
-			behavior: 'smooth',
-		});
-
+			if(pics.hits.length){ 
+				success('Запрос успешно выполнен!');
+				updatePicsMarkup(pics);	
+				loadMoreBtn.show();
+				loadMoreBtn.enable();
+		
+				window.scrollTo({
+					top: document.documentElement.offsetHeight,
+					behavior: 'smooth',
+				});
+				apiService.incrementPage()
+				return;
+			}
+			
+				loadMoreBtn.disable();
+				loadMoreBtn.noMore();
+				
 	}).catch(e=>{
 		console.log(e)
 	});

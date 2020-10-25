@@ -29,7 +29,7 @@ export default class LoadMoreBtn {
 
 	noMore(){
 		this.refs.button.disabled = true;
-		this.refs.label.textContent = 'Конец';
+		this.refs.button.classList.add('is-hidden');
 		this.refs.spinner.classList.add('is-hidden');
 	}
 
